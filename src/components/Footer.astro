@@ -59,15 +59,18 @@ const year = new Date().getFullYear();
   }
   .lockup {
     display: block;
-    width: min(320px, 100%);
+    width: max-content;
+    max-width: 100%;
     color: var(--du-blue-mark);
   }
   .lockup:hover {
     color: var(--du-blue-mark);
   }
+  /* Stała wysokość — szerokość wynika z proporcji logotypu. */
   .lockup :global(svg) {
-    width: 100%;
-    height: auto;
+    width: auto;
+    height: 73px;
+    max-width: 100%;
   }
   .col .label {
     margin-bottom: 18px;
@@ -111,7 +114,9 @@ const year = new Date().getFullYear();
     }
     .lockup {
       grid-column: 1 / -1;
-      width: min(260px, 100%);
+    }
+    .lockup :global(svg) {
+      height: 60px;
     }
   }
   @media (max-width: 480px) {

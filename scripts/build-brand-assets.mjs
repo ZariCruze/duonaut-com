@@ -25,9 +25,14 @@ const dawn = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"
 
 const wordmarkSrc = await readFile(p('src/assets/brand/duonaut-wordmark-tagline.min.svg'), 'utf8');
 const wordmark = wordmarkSrc.replace('fill="currentColor"', 'fill="#412619"');
-const wordmarkW = 640;
-const wordmarkPng = await sharp(Buffer.from(wordmark)).resize({ width: wordmarkW }).png().toBuffer();
+// Stała wysokość lockupu (147 px) — szerokość wynika z proporcji logotypu.
+const wordmarkH = 147;
+const wordmarkPng = await sharp(Buffer.from(wordmark), { density: 300 })
+  .resize({ height: wordmarkH })
+  .png()
+  .toBuffer();
 const wordmarkMeta = await sharp(wordmarkPng).metadata();
+const wordmarkW = wordmarkMeta.width ?? 0;
 
 const contourH = 150;
 const contour = await sharp(await readFile(p('src/assets/sea/sea-contour.jpg')))
