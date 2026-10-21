@@ -252,20 +252,49 @@ const mobile = '(max-width: 899px)';
       display: flex;
       flex-direction: column;
       height: auto;
-      background: linear-gradient(180deg, #fcf2d9 0%, #fcf6e3 55%, #fcf9de 100%);
+      /* Cały hero mieści się w pierwszym ekranie — fale widać bez przewijania. */
+      min-height: 100svh;
+      /* Biel pod tekstem, ciepłe światło dopiero nad horyzontem — zlewa się z niebem wideo. */
+      background: linear-gradient(
+        180deg,
+        var(--du-paper) 0%,
+        var(--du-paper) 52%,
+        #fcf8e6 76%,
+        #fcf9de 100%
+      );
     }
     .content {
       order: 1;
       height: auto;
-      padding-top: 104px;
+      padding-top: 96px;
       padding-bottom: 0;
+    }
+    .eyebrow {
+      margin-bottom: 16px;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+    }
+    .display {
+      font-size: clamp(40px, 11.4vw, 64px);
+      white-space: nowrap;
+    }
+    .h1-pl {
+      margin-top: 18px;
+    }
+    .sub {
+      margin-top: 12px;
+    }
+    .actions {
+      margin-top: 26px;
     }
     .sea {
       position: relative;
       inset: auto;
       order: 2;
-      height: clamp(300px, 54svh, 520px);
-      margin-top: -24px;
+      flex: 1 1 auto;
+      height: auto;
+      min-height: 200px;
+      margin-top: -16px;
       -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 24%);
       mask-image: linear-gradient(180deg, transparent 0%, #000 24%);
     }
