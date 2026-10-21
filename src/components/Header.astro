@@ -34,16 +34,30 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
       <ul class="menu">
         {
           nav.map((item) => (
-            <li class:list={['menu-item', { 'has-sub': item.children }]}>
-              <a
-                href={item.href}
-                class="menu-link"
-                aria-current={isCurrent(item.href) ? 'page' : undefined}
-              >
-                {item.label}
-              </a>
+            <li class:list={['menu-item', { 'has-sub': item.children }]} data-menu-item>
+              <div class="menu-row">
+                <a
+                  href={item.href}
+                  class="menu-link"
+                  aria-current={isCurrent(item.href) ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+                {item.children && (
+                  <button
+                    type="button"
+                    class="sub-toggle"
+                    aria-expanded="false"
+                    aria-controls={`sub-${item.href.slice(1)}`}
+                    aria-label={`${item.label} — pokaż etapy`}
+                    data-sub-toggle
+                  >
+                    <span class="sub-mark" aria-hidden="true" />
+                  </button>
+                )}
+              </div>
               {item.children && (
-                <ul class="sub" aria-label={`${item.label} — etapy`}>
+                <ul id={`sub-${item.href.slice(1)}`} class="sub" aria-label={`${item.label} — etapy`}>
                   {item.children.map((child, i) => (
                     <li>
                       <a href={child.href} class="sub-link">
@@ -90,6 +104,14 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
       }
     });
     header.querySelectorAll('.nav a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    header.querySelectorAll<HTMLButtonElement>('[data-sub-toggle]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('[data-menu-item]');
+        const open = !item?.hasAttribute('data-sub-open');
+        item?.toggleAttribute('data-sub-open', open);
+        btn.setAttribute('aria-expanded', String(open));
+      });
+    });
     window.matchMedia('(min-width: 1000px)').addEventListener('change', () => setOpen(false));
   }
 </script>
@@ -161,6 +183,13 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
   .menu-item {
     position: relative;
   }
+  .menu-row {
+    display: flex;
+    align-items: center;
+  }
+  .sub-toggle {
+    display: none;
+  }
   .menu-link {
     display: inline-block;
     padding-block: 10px;
@@ -225,8 +254,8 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
   }
   .sub-link {
     display: grid;
-    grid-template-columns: 76px 1fr;
-    column-gap: 8px;
+    grid-template-columns: 96px 1fr;
+    column-gap: 12px;
     padding: 12px 24px;
     color: var(--du-ink);
   }
@@ -343,7 +372,47 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
       color: var(--du-ink);
       border-bottom: 0;
     }
+    .menu-row {
+      justify-content: space-between;
+    }
+    .menu-row .menu-link {
+      flex: 1;
+    }
+    .sub-toggle {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      margin-right: -12px;
+      border: 0;
+      background: none;
+      color: var(--du-ink-2);
+      cursor: pointer;
+    }
+    .sub-mark {
+      position: relative;
+      width: 16px;
+      height: 16px;
+    }
+    .sub-mark::before,
+    .sub-mark::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: currentColor;
+      transition: transform 0.2s ease;
+    }
+    .sub-mark::after {
+      transform: rotate(90deg);
+    }
+    [data-sub-open] .sub-mark::after {
+      transform: rotate(0deg);
+    }
     .sub {
+      display: none;
       position: static;
       width: auto;
       padding: 0 0 14px;
@@ -352,6 +421,9 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
       opacity: 1;
       visibility: visible;
       transform: none;
+    }
+    [data-sub-open] .sub {
+      display: block;
     }
     .sub-link {
       padding: 8px 0;
