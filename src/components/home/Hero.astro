@@ -1,22 +1,40 @@
 ---
-import { Picture } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import poster from '../../assets/sea/hero-poster.jpg';
+import posterMobile from '../../assets/sea/hero-poster-mobile.jpg';
 import SceneLayer from '../SceneLayer.astro';
+
+// Dwa kadry: szeroki na desktop, wycinek ze słońcem i statkiem na mobile.
+const img = (src: ImageMetadata, format: 'avif' | 'webp' | 'jpg', widths: number[]) =>
+  getImage({ src, format, widths });
+const [dAvif, dWebp, dJpg, mAvif, mWebp] = await Promise.all([
+  img(poster, 'avif', [960, 1280, 1680]),
+  img(poster, 'webp', [960, 1280, 1680]),
+  img(poster, 'jpg', [1680]),
+  img(posterMobile, 'avif', [480, 960]),
+  img(posterMobile, 'webp', [480, 960]),
+]);
+const mobile = '(max-width: 899px)';
 ---
 
 <section class="hero" data-scene aria-labelledby="hero-title">
   <div class="sea" data-par data-depth="12">
-    <Picture
-      src={poster}
-      formats={['avif', 'webp']}
-      widths={[640, 960, 1280, 1680]}
-      sizes="100vw"
-      alt=""
-      loading="eager"
-      fetchpriority="high"
-      decoding="async"
-      class="sea-poster"
-    />
+    <picture class="sea-picture">
+      <source media={mobile} type="image/avif" srcset={mAvif.srcSet.attribute} sizes="200vw" />
+      <source media={mobile} type="image/webp" srcset={mWebp.srcSet.attribute} sizes="200vw" />
+      <source type="image/avif" srcset={dAvif.srcSet.attribute} sizes="100vw" />
+      <source type="image/webp" srcset={dWebp.srcSet.attribute} sizes="100vw" />
+      <img
+        src={dJpg.src}
+        width="1680"
+        height="544"
+        alt=""
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        class="sea-poster"
+      />
+    </picture>
     <video
       class="sea-video"
       data-sea-video
@@ -27,6 +45,7 @@ import SceneLayer from '../SceneLayer.astro';
       aria-hidden="true"
       tabindex="-1"
       data-src="/media/sea-loop.mp4"
+      data-src-mobile="/media/sea-loop-mobile.mp4"
     >
     </video>
   </div>
@@ -56,16 +75,16 @@ import SceneLayer from '../SceneLayer.astro';
 </section>
 
 <script>
-  // Wideo dopiero po załadowaniu strony, tylko na szerokich ekranach,
-  // bez preferencji ograniczenia ruchu i bez trybu oszczędzania danych.
+  // Wideo dopiero po załadowaniu strony, bez preferencji ograniczenia ruchu
+  // i bez trybu oszczędzania danych. Na mobile lżejszy plik z wycinkiem kadru.
   const video = document.querySelector<HTMLVideoElement>('[data-sea-video]');
   const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const wide = window.matchMedia('(min-width: 900px)');
 
-  if (video && wide.matches && !reduce.matches && !conn?.saveData) {
+  if (video && !reduce.matches && !conn?.saveData) {
     const start = () => {
-      video.src = video.dataset.src || '';
+      video.src = (wide.matches ? video.dataset.src : video.dataset.srcMobile) || '';
       video.muted = true;
       video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
       video.play().catch(() => {});
@@ -97,7 +116,7 @@ import SceneLayer from '../SceneLayer.astro';
     inset: -4%;
     will-change: transform;
   }
-  .sea :global(picture),
+  .sea-picture,
   .sea-poster,
   .sea-video {
     position: absolute;
@@ -226,27 +245,37 @@ import SceneLayer from '../SceneLayer.astro';
     margin-top: 42px;
   }
 
+  /* Mobile: tekst na porannym tle u góry, pod nim pas morza ze słońcem i statkiem.
+     Górna krawędź wideo wtapia się w tło — obraz nigdy pod literami. */
   @media (max-width: 899px) {
     .hero {
+      display: flex;
+      flex-direction: column;
       height: auto;
-      min-height: 100svh;
+      background: linear-gradient(180deg, #fcf2d9 0%, #fcf6e3 55%, #fcf9de 100%);
     }
     .content {
-      align-items: flex-end;
-      padding-block: 120px 96px;
+      order: 1;
+      height: auto;
+      padding-top: 104px;
+      padding-bottom: 0;
     }
-    .veil--side {
-      width: 100%;
-      background: linear-gradient(
-        180deg,
-        rgba(251, 250, 246, 0.9) 0%,
-        rgba(251, 250, 246, 0.86) 55%,
-        rgba(251, 250, 246, 0.6) 100%
-      );
+    .sea {
+      position: relative;
+      inset: auto;
+      order: 2;
+      height: clamp(300px, 54svh, 520px);
+      margin-top: -24px;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 24%);
+      mask-image: linear-gradient(180deg, transparent 0%, #000 24%);
     }
-    .hero-horizon {
-      top: 22%;
+    .sea-poster,
+    .sea-video,
+    .sea :global(img) {
+      object-position: 50% 0%;
     }
+    .veil,
+    .hero-horizon,
     .readout {
       display: none;
     }

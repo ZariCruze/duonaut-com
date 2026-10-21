@@ -63,6 +63,11 @@
   --header-h: 88px;
   color-scheme: light;
 }
+@media (max-width: 999px) {
+  :root {
+    --header-h: 72px;
+  }
+}
 
 /* ---------- reset ---------- */
 *,
@@ -73,7 +78,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: 24px;
+  scroll-padding-top: calc(var(--header-h) + 16px);
 }
 @media (prefers-reduced-motion: no-preference) {
   html {

@@ -12,6 +12,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isCurrent = (href: string) => path === href || path.startsWith(href + '/');
 ---
 
+<div class="scroll-sentinel" data-scroll-sentinel aria-hidden="true"></div>
 <header class:list={['site-header', { 'site-header--overlay': overlay }]} data-header>
   <div class="wrap bar">
     <a href="/" class="brand" aria-label="Duonaut — strona główna">
@@ -68,6 +69,12 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
 
 <script>
   const header = document.querySelector<HTMLElement>('[data-header]');
+  const sentinel = document.querySelector<HTMLElement>('[data-scroll-sentinel]');
+  if (header && sentinel) {
+    new IntersectionObserver(([entry]) => {
+      header.toggleAttribute('data-scrolled', !entry.isIntersecting);
+    }).observe(sentinel);
+  }
   const toggle = header?.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   if (header && toggle) {
     const setOpen = (open: boolean) => {
@@ -88,17 +95,36 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
 </script>
 
 <style>
+  /* Nagłówek zawsze przyklejony do góry. Na stronie głównej przezroczysty nad morzem,
+     po przewinięciu — jednolite tło, żeby treść nie wchodziła pod logotyp i menu. */
+  .scroll-sentinel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 12px;
+    pointer-events: none;
+  }
   .site-header {
-    position: relative;
-    z-index: 20;
+    position: sticky;
+    top: 0;
+    z-index: 50;
     background: var(--du-paper);
     border-bottom: 1px solid var(--du-rule-10);
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease;
   }
   .site-header--overlay {
-    position: absolute;
+    position: fixed;
     inset: 0 0 auto 0;
     background: transparent;
-    border-bottom: 0;
+    border-bottom-color: transparent;
+  }
+  .site-header--overlay[data-scrolled],
+  .site-header--overlay[data-open] {
+    background: var(--du-paper);
+    border-bottom-color: var(--du-rule-10);
   }
   .bar {
     display: flex;
@@ -199,7 +225,7 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
   }
   .sub-link {
     display: grid;
-    grid-template-columns: 64px 1fr;
+    grid-template-columns: 76px 1fr;
     column-gap: 8px;
     padding: 12px 24px;
     color: var(--du-ink);
@@ -210,6 +236,7 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
   }
   .sub-num {
     padding-top: 5px;
+    white-space: nowrap;
     font-family: var(--du-mono);
     font-size: 11px;
     letter-spacing: 0.14em;
@@ -258,6 +285,9 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
   }
 
   @media (max-width: 999px) {
+    .site-header {
+      transition-duration: 0.12s;
+    }
     .bar {
       min-height: 72px;
     }
