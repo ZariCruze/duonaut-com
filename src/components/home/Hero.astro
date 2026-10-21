@@ -1,0 +1,254 @@
+---
+import { Picture } from 'astro:assets';
+import poster from '../../assets/sea/hero-poster.jpg';
+import SceneLayer from '../SceneLayer.astro';
+---
+
+<section class="hero" data-scene aria-labelledby="hero-title">
+  <div class="sea" data-par data-depth="12">
+    <Picture
+      src={poster}
+      formats={['avif', 'webp']}
+      widths={[640, 960, 1280, 1680]}
+      sizes="100vw"
+      alt=""
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+      class="sea-poster"
+    />
+    <video
+      class="sea-video"
+      data-sea-video
+      muted
+      loop
+      playsinline
+      preload="none"
+      aria-hidden="true"
+      tabindex="-1"
+      data-src="/media/sea-loop.mp4"
+    >
+    </video>
+  </div>
+  <div class="veil veil--top" aria-hidden="true"></div>
+  <div class="veil veil--side" aria-hidden="true"></div>
+  <div class="hero-horizon" aria-hidden="true"></div>
+
+  <SceneLayer />
+
+  <p class="readout" data-readout aria-hidden="true">54°21′N 018°40′E — KURS 000°</p>
+
+  <div class="content wrap">
+    <div class="content-inner" data-par data-depth="-16">
+      <p class="eyebrow">Kompetencje · Implementacja · Ewolucja</p>
+      <h1 id="hero-title">
+        <span class="display">Navigate the new</span>
+        <span class="h1-pl">Budujemy organizacje, które pracują ze sztuczną inteligencją.</span>
+      </h1>
+      <p class="sub">
+        Z dojrzałym zarządzaniem i w rytmie ciągłego rozwoju — tak, żeby organizacja umiejętnie wykorzystywała rozwój technologiczny.
+      </p>
+      <div class="actions">
+        <a href="/kontakt" class="btn">Umów rozmowę</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Wideo dopiero po załadowaniu strony, tylko na szerokich ekranach,
+  // bez preferencji ograniczenia ruchu i bez trybu oszczędzania danych.
+  const video = document.querySelector<HTMLVideoElement>('[data-sea-video]');
+  const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const wide = window.matchMedia('(min-width: 900px)');
+
+  if (video && wide.matches && !reduce.matches && !conn?.saveData) {
+    const start = () => {
+      video.src = video.dataset.src || '';
+      video.muted = true;
+      video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
+      video.play().catch(() => {});
+
+      const io = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting && !document.hidden) video.play().catch(() => {});
+        else video.pause();
+      });
+      io.observe(video);
+      reduce.addEventListener('change', (e) => (e.matches ? video.pause() : video.play()));
+    };
+    const idle = () =>
+      'requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 2500 }) : setTimeout(start, 800);
+    if (document.readyState === 'complete') idle();
+    else window.addEventListener('load', idle, { once: true });
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    height: min(max(100svh, 640px), 960px);
+    overflow: hidden;
+    background: #cfe7f1;
+    isolation: isolate;
+  }
+  .sea {
+    position: absolute;
+    inset: -4%;
+    will-change: transform;
+  }
+  .sea :global(picture),
+  .sea-poster,
+  .sea-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 40%;
+  }
+  .sea :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 40%;
+  }
+  .sea-video {
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+  .sea-video:global(.is-playing) {
+    opacity: 1;
+  }
+
+  /* Welon — strefa czytelności. Obraz nigdy ostry pod literami. */
+  .veil {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .veil--top {
+    background: linear-gradient(
+      180deg,
+      rgba(253, 250, 238, 0.45) 0%,
+      rgba(253, 250, 238, 0) 22%,
+      rgba(6, 47, 55, 0.1) 70%,
+      rgba(6, 47, 55, 0.3) 100%
+    );
+  }
+  .veil--side {
+    right: auto;
+    width: 64%;
+    background: linear-gradient(
+      90deg,
+      rgba(251, 250, 246, 0.95) 0%,
+      rgba(251, 250, 246, 0.86) 44%,
+      rgba(251, 250, 246, 0.5) 76%,
+      rgba(251, 250, 246, 0) 100%
+    );
+  }
+  .hero-horizon {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 25%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(8, 59, 69, 0),
+      rgba(8, 59, 69, 0.22) 25%,
+      rgba(8, 59, 69, 0.22) 75%,
+      rgba(8, 59, 69, 0)
+    );
+  }
+
+  .readout {
+    position: absolute;
+    left: var(--gutter);
+    bottom: 34px;
+    z-index: 2;
+    padding: 6px 10px;
+    background: rgba(251, 250, 246, 0.75);
+    font-family: var(--du-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--du-ink-2);
+    pointer-events: none;
+  }
+
+  .content {
+    position: relative;
+    z-index: 3;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-top: var(--header-h);
+  }
+  .content-inner {
+    max-width: 880px;
+    will-change: transform;
+  }
+  .eyebrow {
+    margin-bottom: 28px;
+    font-family: var(--du-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+  }
+  h1 {
+    display: block;
+    font-weight: 200;
+  }
+  .display {
+    display: block;
+  }
+  .h1-pl {
+    display: block;
+    margin-top: 30px;
+    max-width: 24ch;
+    font-size: clamp(24px, 2.5vw, 34px);
+    line-height: 1.25;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    color: var(--du-ink);
+  }
+  .sub {
+    margin-top: 18px;
+    max-width: 46ch;
+    font-size: clamp(17px, 1.5vw, 20px);
+    line-height: 1.55;
+    font-weight: 300;
+    color: #0b4552;
+  }
+  .actions {
+    margin-top: 42px;
+  }
+
+  @media (max-width: 899px) {
+    .hero {
+      height: auto;
+      min-height: 100svh;
+    }
+    .content {
+      align-items: flex-end;
+      padding-block: 120px 96px;
+    }
+    .veil--side {
+      width: 100%;
+      background: linear-gradient(
+        180deg,
+        rgba(251, 250, 246, 0.9) 0%,
+        rgba(251, 250, 246, 0.86) 55%,
+        rgba(251, 250, 246, 0.6) 100%
+      );
+    }
+    .hero-horizon {
+      top: 22%;
+    }
+    .readout {
+      display: none;
+    }
+  }
+</style>

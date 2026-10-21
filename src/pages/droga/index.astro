@@ -1,0 +1,226 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Invitation from '../../components/Invitation.astro';
+import { stages } from '../../data/journey';
+
+const services = (await getCollection('droga')).sort((a, b) => a.data.order - b.data.order);
+const crumbs = [{ name: 'Droga', href: '/droga' }];
+---
+
+<Base
+  title="Droga — od kompetencji, przez implementację, do ewolucji"
+  description="Trzy etapy pracy ze sztuczną inteligencją w organizacji: Kompetencje, Implementacja, Ewolucja. Budujemy zdolność całej organizacji, nie pojedyncze rozwiązania."
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    tone="dawn"
+    crumbs={crumbs}
+    title="Od kompetencji, przez dojrzałą implementację, do ciągłej ewolucji"
+    lead="Nie sprzedajemy katalogu usług. Organizacja nie kupuje produktu, tylko zmianę sposobu pracy — a etapy tej zmiany mają sens w sekwencji."
+  >
+    <ol class="stage-index">
+      {
+        stages.map((s) => (
+          <li>
+            <a href={`#${s.id}`}>
+              <span class="si-num">Etap {s.numeral}</span>
+              <span class="si-name">{s.name}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </PageHero>
+
+  <section class="section">
+    <div class="wrap split">
+      <p class="label">Dlaczego droga, a nie produkt</p>
+      <div class="intro">
+        <p class="statement">W miejscach styku między szkoleniem, wdrożeniem i&nbsp;utrzymaniem ginie większość wartości.</p>
+        <p class="body measure">
+          Wiedza ze szkolenia nie przekłada się na wdrożenie, bo wdraża kto inny. Wdrożenie nie
+          przekłada się na trwałą zmianę, bo utrzymuje kto inny albo nikt. Organizacja płaci trzem
+          dostawcom i&nbsp;dostaje trzy fragmenty.
+        </p>
+        <p class="body measure">
+          Dlatego świadomie bierzemy odpowiedzialność za wszystkie trzy etapy i&nbsp;tych styków nie
+          oddajemy. Każdy etap można rozpocząć osobno — ale prowadzimy go zawsze z&nbsp;myślą
+          o&nbsp;następnym.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {
+    stages.map((s, idx) => (
+      <section
+        id={s.id}
+        class:list={['section', 'stage', idx % 2 === 0 ? 'bg-mist' : 'bg-paper']}
+        aria-labelledby={`h-${s.id}`}
+      >
+        <div class="wrap stage-grid">
+          <div class="stage-head">
+            <p class="label">Etap {s.numeral}</p>
+            <h2 id={`h-${s.id}`} class="h2">
+              {s.name}
+            </h2>
+            <p class="body stage-goal">{s.goal}</p>
+          </div>
+          <ul class="services">
+            {services
+              .filter((x) => x.data.stage === s.id)
+              .map((x) => (
+                <li>
+                  <a href={`/droga/${x.id}`} class="service">
+                    <span class="service-title">{x.data.title}</span>
+                    <span class="service-text">{x.data.summary}</span>
+                    <span class="service-arrow" aria-hidden="true">
+                      →
+                    </span>
+                  </a>
+                </li>
+              ))}
+          </ul>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="section section--rule closing">
+    <div class="wrap split">
+      <p class="label">Istota Drogi</p>
+      <p class="statement">
+        Nie sprzedajemy pojedynczych rozwiązań.{' '}<span class="accent"
+          >Budujemy zdolność całej organizacji do pracy ze sztuczną inteligencją — zaprojektowaną,
+          udokumentowaną i&nbsp;utrzymywaną w&nbsp;czasie.</span
+        >
+      </p>
+    </div>
+  </section>
+
+  <Invitation />
+</Base>
+
+<style>
+  .stage-index {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    margin: 56px 0 0;
+    padding: 0;
+    list-style: none;
+    background: var(--du-rule-14);
+    border: 1px solid var(--du-rule-14);
+  }
+  .stage-index a {
+    display: grid;
+    gap: 4px;
+    height: 100%;
+    padding: 22px 24px;
+    background: rgba(251, 250, 246, 0.7);
+    color: var(--du-ink);
+    transition: background-color 0.25s ease;
+  }
+  .stage-index a:hover {
+    background: var(--du-blue);
+  }
+  .si-num {
+    font-family: var(--du-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+  }
+  .si-name {
+    font-size: 24px;
+    font-weight: 300;
+  }
+  .intro > * + * {
+    margin-top: 24px;
+  }
+  .intro .statement {
+    margin-bottom: 12px;
+  }
+  .stage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+  .stage-head {
+    position: sticky;
+    top: 32px;
+  }
+  .stage-head .label {
+    margin-bottom: 16px;
+    color: var(--du-ink-2);
+  }
+  .stage-goal {
+    margin-top: 24px;
+    max-width: 44ch;
+  }
+  .services {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--du-rule-16);
+  }
+  .services li {
+    border-bottom: 1px solid var(--du-rule-16);
+  }
+  .service {
+    display: grid;
+    grid-template-columns: 1fr 32px;
+    gap: 8px 24px;
+    padding: 28px 8px 28px 0;
+    color: var(--du-ink);
+    transition: padding-left 0.25s ease;
+  }
+  .service:hover {
+    padding-left: 8px;
+    color: var(--du-ink);
+  }
+  .service-title {
+    font-size: clamp(22px, 2vw, 28px);
+    font-weight: 300;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .service-text {
+    grid-column: 1;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--du-text-2);
+    max-width: 56ch;
+  }
+  .service-arrow {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    font-size: 20px;
+    color: var(--du-ink-2);
+    transition: transform 0.25s ease;
+  }
+  .service:hover .service-arrow {
+    transform: translateX(4px);
+  }
+  .closing {
+    padding-block: clamp(96px, 12vw, 150px);
+  }
+  @media (max-width: 900px) {
+    .stage-grid {
+      grid-template-columns: 1fr;
+    }
+    .stage-head {
+      position: static;
+    }
+  }
+  @media (max-width: 700px) {
+    .stage-index {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

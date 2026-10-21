@@ -1,0 +1,138 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Invitation from '../../components/Invitation.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('warsztat');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const others = (await getCollection('warsztat')).filter((e) => e.id !== entry.id);
+
+const crumbs = [
+  { name: 'Warsztat', href: '/warsztat' },
+  { name: d.title, href: `/warsztat/${entry.id}` },
+];
+---
+
+<Base title={`${d.title} — ${d.tagline}`} description={d.description} breadcrumbs={crumbs}>
+  <PageHero crumbs={crumbs} label={d.tagline} title={d.title} lead={d.lead}>
+    <div class="compare">
+      <div class="cmp">
+        <p class="cmp-label">Przed</p>
+        <p class="cmp-text">{d.before}</p>
+      </div>
+      <div class="cmp cmp--after">
+        <p class="cmp-label">Po</p>
+        <p class="cmp-text">{d.after}</p>
+      </div>
+    </div>
+  </PageHero>
+
+  <!-- Miejsce na krótkie nagranie działania systemu na danych zanonimizowanych (do dodania). -->
+
+  <section class="section">
+    <div class="wrap split">
+      <p class="label">Co robi</p>
+      <article class="prose">
+        <Content />
+      </article>
+    </div>
+  </section>
+
+  <section class="section bg-blue client" aria-labelledby="dla-klienta">
+    <div class="wrap split">
+      <p id="dla-klienta" class="label">Co to znaczy dla klienta</p>
+      <p class="statement">{d.forClient}</p>
+    </div>
+  </section>
+
+  {
+    others.length > 0 && (
+      <section class="section section--rule">
+        <div class="wrap split">
+          <p class="label">Inne systemy</p>
+          <ul class="others">
+            {others.map((o) => (
+              <li>
+                <a href={`/warsztat/${o.id}`} class="other">
+                  <span class="other-title">{o.data.title}</span>
+                  <span class="other-text">{o.data.tagline}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <Invitation />
+</Base>
+
+<style>
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    max-width: 960px;
+    margin-top: 56px;
+    background: var(--du-rule-14);
+    border: 1px solid var(--du-rule-14);
+  }
+  .cmp {
+    padding: 24px 28px;
+    background: var(--du-paper);
+  }
+  .cmp--after {
+    background: var(--du-mist);
+  }
+  .cmp-label {
+    margin-bottom: 10px;
+    font-family: var(--du-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+  }
+  .cmp-text {
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  .client .label {
+    color: var(--du-ink);
+  }
+  .others {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--du-rule-16);
+  }
+  .others li {
+    border-bottom: 1px solid var(--du-rule-16);
+  }
+  .other {
+    display: grid;
+    gap: 6px;
+    padding: 24px 0;
+    color: var(--du-ink);
+  }
+  .other-title {
+    font-size: 28px;
+    font-weight: 200;
+  }
+  .other-text {
+    color: var(--du-ink-2);
+  }
+  @media (max-width: 640px) {
+    .compare {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,77 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { site } from '../config/site';
+// TODO przed publikacją: uzupełnić dane administratora i dać tekst do weryfikacji prawnej.
+const admin = '[pełna nazwa podmiotu, adres siedziby, NIP, KRS — do uzupełnienia]';
+---
+
+<Legal
+  title="Polityka prywatności"
+  description="Jak Duonaut przetwarza dane osobowe przekazane przez formularz kontaktowy i podczas korzystania ze strony."
+  href="/polityka-prywatnosci"
+  updated="październik 2026"
+>
+  <h2>Administrator danych</h2>
+  <p>
+    Administratorem danych osobowych jest {admin} („Duonaut”). W sprawach dotyczących danych
+    osobowych można kontaktować się pod adresem <a href={`mailto:${site.email}`}>{site.email}</a>.
+  </p>
+
+  <h2>Jakie dane przetwarzamy</h2>
+  <p>
+    Przez formularz kontaktowy przekazujesz nam adres e-mail, nazwę organizacji (opcjonalnie) oraz
+    treść wiadomości. Jeżeli piszesz do nas bezpośrednio, przetwarzamy dane zawarte w korespondencji.
+  </p>
+  <p>
+    Podczas korzystania ze strony serwer hostingowy zapisuje techniczne dane połączenia (m.in. adres
+    IP, datę i godzinę, rodzaj przeglądarki) w celu zapewnienia bezpieczeństwa i ciągłości działania
+    serwisu.
+  </p>
+
+  <h2>Cel i podstawa przetwarzania</h2>
+  <ul>
+    <li>
+      odpowiedź na wiadomość i prowadzenie korespondencji — prawnie uzasadniony interes
+      administratora (art. 6 ust. 1 lit. f RODO), a jeżeli wiadomość dotyczy współpracy — działania
+      przed zawarciem umowy (art. 6 ust. 1 lit. b RODO);
+    </li>
+    <li>
+      zapewnienie bezpieczeństwa strony — prawnie uzasadniony interes administratora (art. 6 ust. 1
+      lit. f RODO);
+    </li>
+    <li>
+      ustalenie, dochodzenie lub obrona roszczeń — prawnie uzasadniony interes administratora (art. 6
+      ust. 1 lit. f RODO).
+    </li>
+  </ul>
+
+  <h2>Odbiorcy danych</h2>
+  <p>
+    Korzystamy z usług podmiotów przetwarzających dane w naszym imieniu: Vercel Inc. (hosting
+    strony) oraz Resend (dostarczanie wiadomości z formularza). Dostawcy ci mogą przetwarzać dane
+    poza Europejskim Obszarem Gospodarczym — w takim przypadku na podstawie standardowych klauzul
+    umownych zatwierdzonych przez Komisję Europejską lub innego mechanizmu przewidzianego w RODO.
+  </p>
+
+  <h2>Okres przechowywania</h2>
+  <p>
+    Korespondencję przechowujemy przez czas potrzebny do udzielenia odpowiedzi i prowadzenia
+    rozmów, a następnie przez okres przedawnienia ewentualnych roszczeń. Logi techniczne
+    przechowywane są przez okres określony przez dostawcę hostingu.
+  </p>
+
+  <h2>Twoje prawa</h2>
+  <p>
+    Masz prawo dostępu do swoich danych, ich sprostowania, usunięcia, ograniczenia przetwarzania,
+    przenoszenia oraz wniesienia sprzeciwu wobec przetwarzania opartego na prawnie uzasadnionym
+    interesie. Przysługuje Ci również prawo wniesienia skargi do Prezesa Urzędu Ochrony Danych
+    Osobowych.
+  </p>
+  <p>
+    Podanie danych jest dobrowolne, ale bez adresu e-mail nie będziemy mogli odpowiedzieć na
+    wiadomość. Nie podejmujemy decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu.
+  </p>
+
+  <h2>Pliki cookies</h2>
+  <p>Informacje o plikach cookies znajdują się na stronie <a href="/cookies">Cookies</a>.</p>
+</Legal>

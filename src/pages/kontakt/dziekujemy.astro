@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import { site } from '../../config/site';
+---
+
+<Base
+  title="Dziękujemy za wiadomość"
+  description="Wiadomość dotarła do zespołu Duonaut."
+  noindex
+>
+  <PageHero tone="dawn" label="Wiadomość wysłana" title="Dziękujemy. Wiadomość do nas dotarła." lead={site.responseTime}>
+    <div class="back">
+      <a href="/droga" class="link-arrow">W międzyczasie — zobacz całą Drogę</a>
+    </div>
+  </PageHero>
+</Base>
+
+<style>
+  .back {
+    margin-top: 48px;
+  }
+</style>

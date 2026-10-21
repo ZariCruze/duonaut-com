@@ -1,0 +1,527 @@
+---
+import Base from '../layouts/Base.astro';
+import Invitation from '../components/Invitation.astro';
+import { commitments } from '../data/commitments';
+
+const crumbs = [{ name: 'Podejście', href: '/podejscie' }];
+
+const toc = [
+  ['wizja', 'Wizja'],
+  ['misja', 'Misja'],
+  ['w-co-wierzymy', 'W co wierzymy'],
+  ['lad', 'Ład nie jest hamulcem'],
+  ['jak-pracujemy', 'Jak pracujemy'],
+  ['jak-mierzymy', 'Jak mierzymy'],
+  ['czego-nie-robimy', 'Granice'],
+  ['zobowiazania', 'Nasze zobowiązania'],
+];
+
+const conditions = [
+  {
+    name: 'Bezpiecznie',
+    text: 'Dane pozostają pod kontrolą organizacji, w uzgodnionej lokalizacji, z udokumentowanym dostępem. Człowiek pozostaje w pętli wszędzie tam, gdzie decyzja dotyczy ludzi, pieniędzy albo prawa.',
+  },
+  {
+    name: 'Zgodnie z prawem',
+    text: 'Rejestr systemów, klasyfikacja ryzyka, nadzór, przejrzystość. Zgodność zaprojektowana od początku, a nie doklejona po audycie.',
+  },
+  {
+    name: 'Uzasadnione ekonomicznie',
+    text: 'Każde wdrożenie ma policzony stan wyjściowy i policzony wynik. Rozwiązania, które nie zwracają się w rozsądnym czasie, nie powstają.',
+  },
+  {
+    name: 'Utrzymywane w czasie',
+    text: 'Nie kończymy pracy w dniu uruchomienia: utrzymujemy rozwiązania, śledzimy, co pojawia się na rynku, i regularnie doadaptowujemy ekosystem klienta do tego, co realnie go dotyczy.',
+  },
+];
+
+const disciplines = [
+  {
+    name: 'Produkt, nie projekt',
+    text: 'Rozwiązanie oparte na modelu nigdy nie jest skończone. Projekt ma datę zakończenia, produkt ma cykl życia. Każde rozwiązanie dostaje właściciela po stronie klienta, kolejkę zmian, wersjonowanie, metryki użycia i zawczasu ustalony moment wycofania.',
+  },
+  {
+    name: 'Usługa, nie narzędzie',
+    text: 'Każde rozwiązanie wchodzi do katalogu usług organizacji z definicją, poziomem wsparcia, ścieżką zgłaszania incydentów i trybem eskalacji. W dniu, w którym przestanie działać, wiadomo, kto to naprawia, w jakim czasie i kto o tym decyduje.',
+  },
+  {
+    name: 'Zarządzana zmiana',
+    text: 'Nowy model, zmieniona instrukcja systemowa, nowe źródło danych — to zmiany w działającym systemie. Przechodzą przez tryb zarządzania zmianą, z testem i możliwością wycofania.',
+  },
+  {
+    name: 'Doskonalenie jako rytm',
+    text: 'Przegląd tego, co działa, co się zepsuło i co zmieniło się w technologii, jest wpisany w kalendarz, a nie uruchamiany po awarii.',
+  },
+];
+
+const metrics = [
+  'czas cyklu procesu',
+  'praca ludzka na jednostkę wyniku',
+  'jakość mierzona liczbą błędów i eskalacji',
+  'przepustowość przy niezmienionej obsadzie',
+  'czas do decyzji',
+  'koszt jednostkowy operacji',
+];
+
+const notDoing = [
+  'Nie wynajmujemy ludzi na godziny.',
+  'Nie budujemy oprogramowania na zamówienie poza zakresem adopcji sztucznej inteligencji.',
+  'Nie oferujemy klasycznej, deterministycznej automatyzacji procesów (RPA) — tym obszarem się nie zajmujemy.',
+  'Nie odsprzedajemy licencji i nie żyjemy z prowizji dostawców.',
+  'Nie realizujemy projektów bez pomiaru stanu wyjściowego.',
+  'Nie dostarczamy pojedynczych rozwiązań bez ładu, dokumentacji i właściciela po stronie klienta.',
+  'Nie wdrażamy niczego bez wiedzy i zgody działu IT klienta. Nie akceptujemy Shadow IT ani Shadow AI — narzędzi i modeli działających poza wiedzą i kontrolą organizacji.',
+  'Nie realizujemy projektów, w których klient chce AI wyłącznie dlatego, że chce mieć AI.',
+  'Nie budujemy rozwiązań na danych, które się do tego nie nadają — mówimy o tym przed rozpoczęciem pracy, a nie po niej.',
+];
+---
+
+<Base
+  title="Podejście — wizja, misja i granice"
+  description="Jak Duonaut wdraża sztuczną inteligencję: zarządzona, bezpieczna, zgodna z prawem i mierzona. Wizja, misja, sposób pracy, pomiar, granice i zobowiązania."
+  breadcrumbs={crumbs}
+>
+  <section id="wizja" class="vision" aria-labelledby="h-wizja">
+    <div class="wrap vision-inner">
+      <nav class="crumbs" aria-label="Okruszki">
+        <a href="/">Duonaut</a><span aria-hidden="true">/</span><span aria-current="page"
+          >Podejście</span
+        >
+      </nav>
+      <p class="label">01 — Wizja</p>
+      <h1 id="h-wizja" class="vision-text">
+        Świat, w&nbsp;którym każdy człowiek pracuje w&nbsp;duecie ze sztuczną inteligencją
+        i&nbsp;poświęca swój czas temu, w&nbsp;czym jest niezastąpiony.
+      </h1>
+    </div>
+    <nav class="toc wrap" aria-label="Spis treści">
+      <ol>
+        {
+          toc.slice(1).map(([id, name], i) => (
+            <li>
+              <a href={`#${id}`}>
+                <span class="toc-num">{String(i + 2).padStart(2, '0')}</span>
+                {name}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+  </section>
+
+  <section id="misja" class="section" aria-labelledby="h-misja">
+    <div class="wrap split">
+      <p class="label">02 — Misja</p>
+      <div>
+        <h2 id="h-misja" class="statement">
+          Budujemy organizacje pracujące ze sztuczną inteligencją w&nbsp;sposób zarządzony —
+          bezpieczny, zgodny z&nbsp;prawem, uzasadniony ekonomicznie i&nbsp;utrzymywany w&nbsp;czasie.
+        </h2>
+        <p class="body measure mt">
+          Cztery określenia nie są ozdobą. Każde odpowiada jednemu warunkowi, bez którego sztuczna
+          inteligencja w&nbsp;organizacji nie przetrwa zderzenia z&nbsp;rzeczywistością.
+        </p>
+      </div>
+    </div>
+    <div class="wrap">
+      <ol class="hairline-grid four">
+        {
+          conditions.map((c, i) => (
+            <li class="cell">
+              <p class="cell-num">{String(i + 1).padStart(2, '0')}</p>
+              <h3 class="cell-title">{c.name}</h3>
+              <p class="small">{c.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section id="w-co-wierzymy" class="section bg-blue" aria-labelledby="h-wierzymy">
+    <div class="wrap split">
+      <p class="label label-blue">03 — W co wierzymy</p>
+      <div class="prose prose--on-blue">
+        <h2 id="h-wierzymy">Najbliższa dekada będzie należeć do duetów</h2>
+        <p>
+          Nie będzie należeć do organizacji, które odrzucą sztuczną inteligencję. Nie będzie też
+          należeć do tych, które spróbują nią zastąpić ludzi.
+        </p>
+        <p>
+          Wierzymy, że istnieje naturalny podział pracy między człowiekiem a&nbsp;maszyną. Maszyna
+          jest niedościgniona w&nbsp;powtarzalności, skali, cierpliwości i&nbsp;konsekwencji. Człowiek
+          jest niezastąpiony w&nbsp;osądzie, empatii, rozumieniu kontekstu, wyczuciu drugiego
+          człowieka, kreatywności i&nbsp;braniu odpowiedzialności. Tego nie zastąpi żaden model,
+          ponieważ nie jest to kwestia mocy obliczeniowej.
+        </p>
+        <p>
+          Dzisiaj ten podział jest odwrócony. Organizacje zatrudniają ludzi za ich doświadczenie
+          i&nbsp;osąd, po czym kupują od nich godziny, w&nbsp;których ani doświadczenie, ani osąd nie
+          są potrzebne. To nie jest problem wydajności. To jest problem alokacji najcenniejszego
+          zasobu, jakim organizacja dysponuje.
+        </p>
+        <h3>Dlaczego dopiero teraz</h3>
+        <p>
+          Sztuczna inteligencja jest pierwszą technologią, która pozwala ten podział odwrócić
+          z&nbsp;powrotem. Nie dlatego, że zastępuje człowieka, ale dlatego, że jako pierwsza sięga do
+          warstwy pracy wymagającej rozumienia kontekstu, a&nbsp;nie wyłącznie wykonania reguły.
+          Poprzednie fale automatyzacji przejmowały to, co dawało się zapisać w&nbsp;instrukcji.
+          Reszta — a&nbsp;więc większość ludzkiego czasu w&nbsp;organizacji — pozostawała nietknięta.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="lad" class="section" aria-labelledby="h-lad">
+    <div class="wrap split">
+      <p class="label">04 — Ład</p>
+      <div>
+        <h2 id="h-lad" class="big-quote">
+          Ład nie jest hamulcem.{' '}<span class="accent">Jest warunkiem prędkości.</span>
+        </h2>
+        <div class="prose mt-l">
+          <p>
+            Organizacja, która nie wie, gdzie trafiają jej dane, kto jest właścicielem którego
+            rozwiązania i&nbsp;co się stanie przy zmianie dostawcy, nie jest w&nbsp;stanie skalować
+            sztucznej inteligencji. Może wyłącznie pilotować ją w&nbsp;nieskończoność, bo każdy kolejny
+            krok blokuje dział bezpieczeństwa, dział prawny albo audyt — i&nbsp;słusznie.
+          </p>
+          <p>
+            Ład jest tym, co pozwala przejść z&nbsp;jednego rozwiązania do pięćdziesięciu. Bez niego
+            pierwsze dziesięć wdrożeń jest szybkie, a&nbsp;jedenaste nie powstaje nigdy.
+          </p>
+          <p>
+            Bezpiecznie nie znaczy zachowawczo. Pracujemy na najnowszych narzędziach i&nbsp;budujemy
+            rozwiązania na najwyższym dostępnym poziomie technicznym. Różnica polega wyłącznie na
+            tym, że wiemy, co budujemy, po co, na czyich danych i&nbsp;kto to utrzyma.
+          </p>
+          <p><a href="/droga/lad">Fundament ładu w&nbsp;praktyce</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="jak-pracujemy" class="section bg-ink on-dark work" aria-labelledby="h-pracujemy">
+    <div class="wrap split">
+      <p class="label">05 — Jak pracujemy</p>
+      <div>
+        <h2 id="h-pracujemy" class="statement">
+          Wdrażamy sztuczną inteligencję tak, jak zarządza się usługami krytycznymi.
+        </h2>
+        <p class="body measure mt">
+          Rynek sztucznej inteligencji wyrósł z&nbsp;kultury eksperymentu — właściwej dla prototypu
+          i&nbsp;zabójczej dla rozwiązania, od którego zależy proces produkcyjny. My wywodzimy się
+          z&nbsp;innej kultury: przez kilkanaście lat zajmowaliśmy się tym, żeby systemy, od których
+          zależą tysiące ludzi, działały w&nbsp;sposób przewidywalny.
+        </p>
+      </div>
+    </div>
+    <div class="wrap">
+      <ol class="hairline-grid four four--dark">
+        {
+          disciplines.map((c, i) => (
+            <li class="cell">
+              <p class="cell-num">{String(i + 1).padStart(2, '0')}</p>
+              <h3 class="cell-title">{c.name}</h3>
+              <p class="small">{c.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="closing-line">
+        Dyscyplina nie spowalnia pierwszego wdrożenia.{' '}<span class="accent"
+          >Umożliwia pięćdziesiąte.</span
+        >
+      </p>
+    </div>
+  </section>
+
+  <section id="jak-mierzymy" class="section" aria-labelledby="h-mierzymy">
+    <div class="wrap split">
+      <p class="label">06 — Jak mierzymy</p>
+      <div class="prose">
+        <h2 id="h-mierzymy">Liczba przed, liczba po</h2>
+        <p>
+          Każda nasza obietnica ma przypisaną <strong>jednostkę analizy</strong>: konkretny proces,
+          rolę albo zespół. Nigdy całą firmę. Mniejsza obietnica z&nbsp;twardym dowodem jest więcej
+          warta niż wielka bez niego.
+        </p>
+        <h3>Czym mierzymy</h3>
+        <ul>
+          {metrics.map((m) => <li>{m}</li>)}
+        </ul>
+        <h3>Uzasadnienie ekonomiczne</h3>
+        <p>
+          Przed budową szacujemy koszt wytworzenia, koszt eksploatacji modelu i&nbsp;koszt utrzymania,
+          a&nbsp;następnie zestawiamy je z&nbsp;policzoną wartością odzyskaną. Nie interesuje nas sam
+          fakt dostarczenia, tylko to, czy organizacji się to opłaciło.
+        </p>
+        <blockquote>
+          <p>
+            Nie realizujemy projektów, w&nbsp;których nie wolno nam wykonać pomiaru stanu wyjściowego.
+          </p>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section id="czego-nie-robimy" class="section bg-mist sun-bar" aria-labelledby="h-nie-robimy">
+    <div class="wrap split">
+      <p class="label">07 — Granice</p>
+      <div>
+        <h2 id="h-nie-robimy" class="h2">Czego nie robimy</h2>
+        <ul class="not-list">
+          {notDoing.map((n) => <li>{n}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section
+    id="zobowiazania"
+    class="section section--rule commitments"
+    aria-labelledby="h-zobowiazania"
+  >
+    <div class="wrap">
+      <p class="label">08 — Nasze zobowiązania</p>
+      <h2 id="h-zobowiazania" class="h2 commit-title">
+        Klient ma prawo nas z&nbsp;nich rozliczyć
+      </h2>
+      <ol class="commit-list">
+        {
+          commitments.map((c, i) => (
+            <li>
+              <span class="commit-num">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="commit-name">{c.title}</h3>
+              <p class="commit-text">{c.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <Invitation />
+</Base>
+
+<style>
+  .vision {
+    position: relative;
+    background: var(--du-dawn);
+  }
+  .vision::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 4px;
+    background: var(--du-sun-deep);
+  }
+  .vision-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: min(64svh, 640px);
+    padding-block: 72px;
+  }
+  .crumbs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: auto;
+    font-family: var(--du-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+  }
+  .crumbs span[aria-hidden] {
+    color: var(--du-rule-22);
+  }
+  .vision .label {
+    margin: 64px 0 28px;
+    color: var(--du-ink-2);
+  }
+  .vision-text {
+    max-width: 26ch;
+    font-size: clamp(28px, 3.6vw, 50px);
+    line-height: 1.15;
+    font-weight: 200;
+    letter-spacing: -0.025em;
+    color: var(--du-ink-deep);
+    margin-bottom: auto;
+  }
+  .toc {
+    padding-bottom: 32px;
+  }
+  .toc ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 28px;
+    margin: 0;
+    padding: 24px 0 0;
+    list-style: none;
+    border-top: 1px solid var(--du-rule-22);
+  }
+  .toc a {
+    font-size: 15px;
+    color: var(--du-ink-2);
+  }
+  .toc a:hover {
+    color: var(--du-ink);
+  }
+  .toc-num {
+    margin-right: 6px;
+    font-family: var(--du-mono);
+    font-size: 11px;
+    color: var(--du-ink-2);
+  }
+  .mt {
+    margin-top: 28px;
+  }
+  .mt-l {
+    margin-top: 48px;
+  }
+  .four {
+    grid-template-columns: repeat(4, 1fr);
+    margin: var(--space-l) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cell {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 32px 28px 36px;
+  }
+  .cell-num {
+    font-family: var(--du-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--du-ink-2);
+  }
+  .cell-title {
+    font-size: 23px;
+    font-weight: 300;
+    line-height: 1.25;
+  }
+  .label-blue {
+    color: var(--du-ink);
+  }
+  .prose--on-blue {
+    color: var(--du-ink);
+  }
+  .big-quote {
+    font-size: clamp(38px, 5vw, 68px);
+    line-height: 1.06;
+    font-weight: 200;
+    letter-spacing: -0.03em;
+    max-width: 18ch;
+    color: var(--du-ink-deep);
+  }
+  .work .statement {
+    color: var(--du-blue);
+  }
+  .four--dark {
+    background: var(--du-rule-inv);
+    border-color: var(--du-rule-inv);
+  }
+  .four--dark > .cell {
+    background: var(--du-ink);
+  }
+  .four--dark .cell-num {
+    color: rgba(185, 223, 242, 0.7);
+  }
+  .four--dark .cell-title {
+    color: var(--du-ink-inv);
+  }
+  .work .closing-line {
+    color: var(--du-ink-inv);
+  }
+  .closing-line {
+    margin-top: var(--space-l);
+    font-size: clamp(26px, 3vw, 40px);
+    line-height: 1.2;
+    font-weight: 200;
+    letter-spacing: -0.02em;
+  }
+  .not-list {
+    list-style: none;
+    margin: 40px 0 0;
+    padding: 0;
+    border-top: 1px solid var(--du-rule-14);
+  }
+  .not-list li {
+    position: relative;
+    padding: 18px 0 18px 36px;
+    border-bottom: 1px solid var(--du-rule-14);
+    font-size: 19px;
+    line-height: 1.5;
+    font-weight: 300;
+  }
+  .not-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 32px;
+    width: 18px;
+    height: 1px;
+    background: var(--du-ink-2);
+  }
+  .commitments {
+    padding-block: clamp(110px, 14vw, 180px);
+  }
+  .commit-title {
+    margin: 16px 0 56px;
+    max-width: 20ch;
+  }
+  .commit-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--du-rule-14);
+  }
+  .commit-list li {
+    display: grid;
+    grid-template-columns: 64px 1fr 1fr;
+    gap: 16px 48px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--du-rule-14);
+  }
+  .commit-num {
+    padding-top: 10px;
+    font-family: var(--du-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--du-ink-2);
+  }
+  .commit-name {
+    font-size: clamp(24px, 2.6vw, 34px);
+    line-height: 1.2;
+    font-weight: 200;
+    letter-spacing: -0.015em;
+  }
+  .commit-text {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--du-text-2);
+  }
+  @media (max-width: 1000px) {
+    .four {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 800px) {
+    .commit-list li {
+      grid-template-columns: 40px 1fr;
+    }
+    .commit-text {
+      grid-column: 2;
+    }
+  }
+  @media (max-width: 560px) {
+    .four {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

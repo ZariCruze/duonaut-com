@@ -1,0 +1,25 @@
+---
+import Base from './Base.astro';
+import PageHero from '../components/PageHero.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+  updated: string;
+}
+const { title, description, href, updated } = Astro.props;
+const crumbs = [{ name: title, href }];
+---
+
+<Base title={title} description={description} breadcrumbs={crumbs}>
+  <PageHero crumbs={crumbs} title={title} lead={`Ostatnia aktualizacja: ${updated}`} />
+  <section class="section">
+    <div class="wrap split">
+      <p class="label">Treść</p>
+      <article class="prose">
+        <slot />
+      </article>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,145 @@
+---
+// Sekcja 3 — Idea duetu. Rejestr głośny. Jedyne miejsce na stronie głównej, w którym rozwijamy metaforę.
+import { Image } from 'astro:assets';
+import ship from '../../assets/sea/duet-ship.jpg';
+---
+
+<section class="section bg-paper duet" aria-labelledby="duet">
+  <div class="wrap grid">
+    <div class="text">
+      <p class="label">01 — Duet</p>
+      <h2 id="duet" class="h2 title">Człowiek i&nbsp;maszyna<br />na jednym pokładzie</h2>
+      <p class="p">
+        <em>Nauta</em> to żeglarz, <em>duo</em> to dwoje. Duonaut to dwoje żeglarzy na jednym pokładzie,
+        płynących w&nbsp;stronę, której nikt jeszcze nie zmapował. Jednym z&nbsp;nich jest człowiek. Drugim
+        — sztuczna inteligencja.
+      </p>
+      <p class="p">
+        Maszyna jest niedościgniona w&nbsp;powtarzalności, skali i&nbsp;konsekwencji. Człowiek jest
+        niezastąpiony w&nbsp;osądzie, rozumieniu kontekstu i&nbsp;braniu odpowiedzialności. Dziś ten
+        podział jest odwrócony: ludzie spędzają większość czasu na pracy, która nie wymaga ani ich
+        doświadczenia, ani osądu.
+      </p>
+
+      <div class="pair">
+        <div class="card">
+          <p class="card-label">Człowiek</p>
+          <p class="card-title">Osąd i&nbsp;odpowiedzialność</p>
+          <p class="card-text">Kontekst, relacja z&nbsp;drugim człowiekiem, decyzja o&nbsp;kierunku</p>
+        </div>
+        <div class="card">
+          <p class="card-label">Sztuczna inteligencja</p>
+          <p class="card-title">Powtarzalność i&nbsp;skala</p>
+          <p class="card-text">Cierpliwość, konsekwencja, praca, która się nie nudzi i&nbsp;nie męczy</p>
+        </div>
+      </div>
+
+      <a href="/podejscie" class="link-arrow more">Poznaj nasze podejście</a>
+    </div>
+
+    <figure class="art">
+      <Image
+        src={ship}
+        alt="Ilustracja: żaglowiec na horyzoncie, wschód słońca nad wzburzonym morzem"
+        widths={[435, 870]}
+        sizes="(max-width: 900px) 90vw, 40vw"
+        loading="lazy"
+        decoding="async"
+      />
+    </figure>
+  </div>
+</section>
+
+<style>
+  .duet {
+    border-bottom: 0;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: var(--space-xl);
+    align-items: center;
+  }
+  .label {
+    margin-bottom: 16px;
+  }
+  .title {
+    margin-bottom: 26px;
+  }
+  .p {
+    font-size: 18px;
+    line-height: 1.65;
+    font-weight: 300;
+    max-width: 52ch;
+    color: var(--du-text-2);
+  }
+  .p + .p {
+    margin-top: 18px;
+  }
+  .p em {
+    font-style: normal;
+    font-weight: 400;
+    color: var(--du-ink);
+  }
+  .pair {
+    display: flex;
+    gap: 20px;
+    margin-top: 40px;
+  }
+  .card {
+    flex: 1;
+    padding: 24px;
+    background: var(--du-mist);
+    border: 1px solid var(--du-rule-14);
+  }
+  .card-label {
+    margin-bottom: 10px;
+    font-family: var(--du-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+  }
+  .card-title {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+  .card-text {
+    margin-top: 4px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--du-text-2);
+  }
+  .more {
+    margin-top: 40px;
+  }
+  .art {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border: 1px solid var(--du-rule-14);
+  }
+  .art :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .art {
+      aspect-ratio: 4 / 3;
+      order: -1;
+    }
+    .art :global(img) {
+      object-position: 50% 20%;
+    }
+  }
+  @media (max-width: 520px) {
+    .pair {
+      flex-direction: column;
+    }
+  }
+</style>

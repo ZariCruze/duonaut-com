@@ -1,0 +1,22 @@
+# build
+dist/
+.astro/
+.vercel/
+
+# dependencies
+node_modules/
+
+# env
+.env
+.env.*
+!.env.example
+
+# logs
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+.claude/settings.local.json
+
+# materiały źródłowe (strategia wewnętrzna, surowe wideo) — poza repozytorium
+input/

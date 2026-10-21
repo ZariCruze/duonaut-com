@@ -1,0 +1,226 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Invitation from '../../components/Invitation.astro';
+import { stageById } from '../../data/journey';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('droga');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const stage = stageById[d.stage];
+
+const siblings = (await getCollection('droga', (e) => e.data.stage === d.stage)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const next = d.next ? await getEntry('droga', d.next) : undefined;
+const nextStage = next ? stageById[next.data.stage] : undefined;
+
+const crumbs = [
+  { name: 'Droga', href: '/droga' },
+  { name: `Etap ${stage.numeral} — ${stage.name}`, href: `/droga#${stage.id}` },
+  { name: d.title, href: `/droga/${entry.id}` },
+];
+
+const serviceLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: d.title,
+  description: d.description,
+  serviceType: `Etap ${stage.numeral} — ${stage.name}`,
+  provider: { '@id': new URL('/#organization', Astro.site).href },
+  areaServed: 'PL',
+  url: new URL(`/droga/${entry.id}`, Astro.site).href,
+};
+---
+
+<Base title={d.title} description={d.description} breadcrumbs={crumbs} jsonLd={[serviceLd]}>
+  <PageHero crumbs={crumbs} title={d.title} lead={d.lead}>
+    {
+      d.facts && d.facts.length > 0 && (
+        <dl class="facts">
+          {d.facts.map((f) => (
+            <div class="fact">
+              <dt>{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+  </PageHero>
+
+  <section class="section">
+    <div class="wrap layout">
+      <aside class="aside" aria-label={`Etap ${stage.numeral} — ${stage.name}`}>
+        <p class="label">Etap {stage.numeral} · {stage.name}</p>
+        <ul class="aside-list">
+          {
+            siblings.map((s) => (
+              <li>
+                <a
+                  href={`/droga/${s.id}`}
+                  aria-current={s.id === entry.id ? 'page' : undefined}
+                >
+                  {s.data.title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <a href="/droga" class="link-mono back">← Cała Droga</a>
+      </aside>
+
+      <article class="prose">
+        <Content />
+      </article>
+    </div>
+  </section>
+
+  {
+    next && nextStage && (
+      <section class="section bg-mist next" aria-labelledby="nastepny-krok">
+        <div class="wrap split">
+          <p id="nastepny-krok" class="label">
+            Następny krok
+          </p>
+          <a href={`/droga/${next.id}`} class="next-card">
+            <span class="next-meta">
+              Etap {nextStage.numeral} · {nextStage.name}
+            </span>
+            <span class="next-title">{next.data.title}</span>
+            <span class="next-text">{next.data.summary}</span>
+            <span class="link-mono next-link">Przejdź dalej →</span>
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  <Invitation />
+</Base>
+
+<style>
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    margin: 56px 0 0;
+    background: var(--du-rule-14);
+    border: 1px solid var(--du-rule-14);
+  }
+  .fact {
+    padding: 20px 22px;
+    background: var(--du-paper);
+  }
+  .fact dt {
+    margin-bottom: 8px;
+    font-family: var(--du-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+  }
+  .fact dd {
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+  .aside {
+    position: sticky;
+    top: 32px;
+  }
+  .aside .label {
+    color: var(--du-ink-2);
+  }
+  .aside-list {
+    list-style: none;
+    margin: 28px 0 32px;
+    padding: 0;
+    border-top: 1px solid var(--du-rule-14);
+    max-width: 340px;
+  }
+  .aside-list li {
+    border-bottom: 1px solid var(--du-rule-14);
+  }
+  .aside-list a {
+    display: block;
+    padding: 14px 0;
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--du-ink-2);
+  }
+  .aside-list a:hover {
+    color: var(--du-ink);
+  }
+  .aside-list a[aria-current='page'] {
+    color: var(--du-ink);
+    font-weight: 400;
+    padding-left: 16px;
+    border-left: 1px solid var(--du-ink);
+  }
+  .back {
+    color: var(--du-ink-2);
+  }
+
+  .next-card {
+    display: grid;
+    gap: 12px;
+    padding: 40px 36px;
+    background: var(--du-paper);
+    border: 1px solid var(--du-rule-14);
+    color: var(--du-ink);
+    transition: background-color 0.3s ease;
+  }
+  .next-card:hover {
+    background: var(--du-blue);
+    color: var(--du-ink);
+  }
+  .next-meta {
+    font-family: var(--du-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+  }
+  .next-title {
+    font-size: clamp(28px, 3vw, 38px);
+    font-weight: 200;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .next-text {
+    font-size: 16px;
+    color: var(--du-text-2);
+    max-width: 52ch;
+  }
+  .next-link {
+    margin-top: 8px;
+    color: var(--du-ink-2);
+  }
+
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .aside {
+      position: static;
+      order: 2;
+      padding-top: 40px;
+      border-top: 1px solid var(--du-rule-16);
+    }
+  }
+</style>

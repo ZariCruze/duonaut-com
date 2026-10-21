@@ -1,0 +1,122 @@
+---
+import lockupRaw from '../assets/brand/duonaut-wordmark-tagline.min.svg?raw';
+import { site } from '../config/site';
+
+const lockup = lockupRaw.replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
+const year = new Date().getFullYear();
+---
+
+<footer class="footer bg-deep on-dark">
+  <div class="wrap">
+    <div class="top">
+      <a href="/" class="lockup" aria-label="Duonaut — Navigate the new. Strona główna">
+        <Fragment set:html={lockup} />
+      </a>
+
+      <div class="col">
+        <p class="label">Kontakt</p>
+        <ul class="list">
+          <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          {
+            site.phone && (
+              <li>
+                <a href={`tel:${site.phone.replace(/\s/g, '')}`}>{site.phone}</a>
+              </li>
+            )
+          }
+          <li><a href={site.linkedin} rel="noopener" target="_blank">LinkedIn</a></li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <p class="label">Pierwszy krok</p>
+        <ul class="list">
+          <li><a href="/kontakt">Umów rozmowę</a></li>
+          <li><a href="/droga/sesja-zarzad">Sesja dla zarządów</a></li>
+          <li><a href="/droga/diagnoza">Diagnoza</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <span>© {year} {site.name}</span>
+      <span>{site.partner}</span>
+      <a href="/polityka-prywatnosci">Polityka prywatności</a>
+      <a href="/cookies">Cookies</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: 80px 40px;
+  }
+  .top {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .lockup {
+    display: block;
+    width: min(320px, 100%);
+    color: var(--du-blue-mark);
+  }
+  .lockup:hover {
+    color: var(--du-blue-mark);
+  }
+  .lockup :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+  .col .label {
+    margin-bottom: 18px;
+  }
+  .list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .list a {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--du-ink-inv);
+  }
+  .list a:hover {
+    color: var(--du-blue);
+  }
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 28px;
+    margin-top: 72px;
+    padding-top: 28px;
+    border-top: 1px solid var(--du-rule-inv);
+    font-family: var(--du-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(185, 223, 242, 0.62);
+  }
+  .bottom a {
+    color: rgba(185, 223, 242, 0.62);
+  }
+  .bottom a:hover {
+    color: var(--du-blue);
+  }
+  @media (max-width: 800px) {
+    .top {
+      grid-template-columns: 1fr 1fr;
+    }
+    .lockup {
+      grid-column: 1 / -1;
+      width: min(260px, 100%);
+    }
+  }
+  @media (max-width: 480px) {
+    .top {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,334 @@
+---
+import wordmarkRaw from '../assets/brand/duonaut-wordmark.min.svg?raw';
+import { nav, cta } from '../config/site';
+
+interface Props {
+  overlay?: boolean;
+}
+const { overlay = false } = Astro.props;
+
+const wordmark = wordmarkRaw.replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => path === href || path.startsWith(href + '/');
+---
+
+<header class:list={['site-header', { 'site-header--overlay': overlay }]} data-header>
+  <div class="wrap bar">
+    <a href="/" class="brand" aria-label="Duonaut — strona główna">
+      <Fragment set:html={wordmark} />
+    </a>
+
+    <button
+      class="toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="nawigacja"
+      data-menu-toggle
+    >
+      <span class="toggle-label">Menu</span>
+      <span class="toggle-lines" aria-hidden="true"><span></span><span></span></span>
+    </button>
+
+    <nav id="nawigacja" class="nav" aria-label="Nawigacja główna">
+      <ul class="menu">
+        {
+          nav.map((item) => (
+            <li class:list={['menu-item', { 'has-sub': item.children }]}>
+              <a
+                href={item.href}
+                class="menu-link"
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+              {item.children && (
+                <ul class="sub" aria-label={`${item.label} — etapy`}>
+                  {item.children.map((child, i) => (
+                    <li>
+                      <a href={child.href} class="sub-link">
+                        <span class="sub-num">Etap {['I', 'II', 'III'][i]}</span>
+                        <span class="sub-name">{child.label}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+      <a
+        href={cta.href}
+        class="nav-cta"
+        aria-current={isCurrent(cta.href) ? 'page' : undefined}>{cta.label}</a
+      >
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = header?.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  if (header && toggle) {
+    const setOpen = (open: boolean) => {
+      header.toggleAttribute('data-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      document.documentElement.style.overflow = open ? 'hidden' : '';
+    };
+    toggle.addEventListener('click', () => setOpen(!header.hasAttribute('data-open')));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && header.hasAttribute('data-open')) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    header.querySelectorAll('.nav a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    window.matchMedia('(min-width: 1000px)').addEventListener('change', () => setOpen(false));
+  }
+</script>
+
+<style>
+  .site-header {
+    position: relative;
+    z-index: 20;
+    background: var(--du-paper);
+    border-bottom: 1px solid var(--du-rule-10);
+  }
+  .site-header--overlay {
+    position: absolute;
+    inset: 0 0 auto 0;
+    background: transparent;
+    border-bottom: 0;
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    min-height: var(--header-h);
+  }
+  .brand {
+    display: block;
+    color: var(--du-brown);
+    flex: none;
+  }
+  .brand :global(svg) {
+    width: auto;
+    height: 26px;
+  }
+  .brand:hover {
+    color: var(--du-brown);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+  }
+  .menu {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .menu-item {
+    position: relative;
+  }
+  .menu-link {
+    display: inline-block;
+    padding-block: 10px;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+    border-bottom: 1px solid transparent;
+  }
+  .menu-link:hover,
+  .menu-link[aria-current='page'] {
+    color: var(--du-ink);
+  }
+  .menu-link[aria-current='page'] {
+    border-bottom-color: var(--du-ink);
+  }
+
+  .nav-cta {
+    border: 1px solid var(--du-ink);
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--du-ink);
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+  .nav-cta:hover,
+  .nav-cta[aria-current='page'] {
+    background: var(--du-ink);
+    color: var(--du-blue);
+  }
+
+  /* Podmenu Drogi */
+  .sub {
+    position: absolute;
+    left: -24px;
+    top: 100%;
+    width: 300px;
+    margin: 0;
+    padding: 8px 0;
+    list-style: none;
+    background: var(--du-paper);
+    border: 1px solid var(--du-rule-14);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      visibility 0s linear 0.2s;
+  }
+  .has-sub:hover .sub,
+  .has-sub:focus-within .sub {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
+  .sub-link {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    column-gap: 8px;
+    padding: 12px 24px;
+    color: var(--du-ink);
+  }
+  .sub-link:hover {
+    background: var(--du-mist);
+    color: var(--du-ink);
+  }
+  .sub-num {
+    padding-top: 5px;
+    font-family: var(--du-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+  }
+  .sub-name {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  /* Przełącznik mobilny */
+  .toggle {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0 0 0 12px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    font-family: var(--du-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--du-ink);
+  }
+  .toggle-lines {
+    display: grid;
+    gap: 6px;
+    width: 22px;
+  }
+  .toggle-lines span {
+    display: block;
+    height: 1px;
+    background: currentColor;
+    transition: transform 0.25s ease;
+  }
+  [data-open] .toggle-lines span:first-child {
+    transform: translateY(3.5px) rotate(45deg);
+  }
+  [data-open] .toggle-lines span:last-child {
+    transform: translateY(-3.5px) rotate(-45deg);
+  }
+
+  @media (max-width: 999px) {
+    .bar {
+      min-height: 72px;
+    }
+    .brand :global(svg) {
+      height: 22px;
+    }
+    .toggle {
+      display: inline-flex;
+      position: relative;
+      z-index: 2;
+    }
+    .nav {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 32px;
+      padding: 104px var(--gutter) 40px;
+      background: var(--du-paper);
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity 0.25s ease,
+        visibility 0s linear 0.25s;
+    }
+    [data-open] .nav {
+      opacity: 1;
+      visibility: visible;
+      transition-delay: 0s;
+    }
+    [data-open] .brand {
+      position: relative;
+      z-index: 2;
+    }
+    .menu {
+      flex-direction: column;
+      gap: 0;
+      border-top: 1px solid var(--du-rule-14);
+    }
+    .menu-item {
+      border-bottom: 1px solid var(--du-rule-14);
+    }
+    .menu-link {
+      display: block;
+      padding-block: 18px;
+      font-size: 26px;
+      font-weight: 200;
+      letter-spacing: -0.01em;
+      text-transform: none;
+      color: var(--du-ink);
+      border-bottom: 0;
+    }
+    .sub {
+      position: static;
+      width: auto;
+      padding: 0 0 14px;
+      border: 0;
+      background: none;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+    .sub-link {
+      padding: 8px 0;
+    }
+    .nav-cta {
+      align-self: flex-start;
+      padding: 15px 28px;
+    }
+  }
+</style>

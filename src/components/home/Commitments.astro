@@ -1,0 +1,128 @@
+---
+// Zobowiązania. Rejestr cichy. Punkty w stopniu tekstu, nie nagłówka;
+// każdy rozwijany jednym zdaniem, same zobowiązania są zawsze widoczne.
+import { commitments } from '../../data/commitments';
+---
+
+<section class="section section--rule commitments" aria-labelledby="zobowiazania">
+  <div class="wrap split">
+    <div class="head">
+      <p class="label">05 — Zobowiązania</p>
+      <h2 id="zobowiazania" class="h2 title">Nasze zobowiązania</h2>
+      <p class="body intro">Klient ma prawo nas z&nbsp;nich rozliczyć.</p>
+    </div>
+
+    <div>
+      <ol class="list">
+        {
+          commitments.map((c, i) => (
+            <li>
+              <details class="item">
+                <summary>
+                  <span class="num" aria-hidden="true">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span class="item-title">{c.title}</span>
+                  <span class="mark" aria-hidden="true" />
+                </summary>
+                <p class="text">{c.text}</p>
+              </details>
+            </li>
+          ))
+        }
+      </ol>
+
+      <a href="/podejscie#zobowiazania" class="link-arrow more">Pełne brzmienie w&nbsp;Podejściu</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .head .label {
+    margin-bottom: 16px;
+  }
+  .intro {
+    margin-top: 20px;
+    max-width: 30ch;
+  }
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--du-rule-14);
+  }
+  .list > li {
+    border-bottom: 1px solid var(--du-rule-14);
+  }
+  summary {
+    display: grid;
+    grid-template-columns: 48px 1fr 24px;
+    align-items: baseline;
+    gap: 12px;
+    padding: 20px 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .num {
+    font-family: var(--du-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--du-ink-2);
+  }
+  .item-title {
+    font-size: clamp(18px, 1.5vw, 21px);
+    line-height: 1.4;
+    font-weight: 300;
+    color: var(--du-ink);
+    transition: color 0.2s ease;
+  }
+  summary:hover .item-title {
+    color: var(--du-ink-2);
+  }
+  .mark {
+    position: relative;
+    align-self: center;
+    width: 14px;
+    height: 14px;
+  }
+  .mark::before,
+  .mark::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: var(--du-ink-2);
+    transition: transform 0.25s ease;
+  }
+  .mark::after {
+    transform: rotate(90deg);
+  }
+  details[open] .mark::after {
+    transform: rotate(0deg);
+  }
+  .text {
+    max-width: 58ch;
+    margin: -4px 0 0 60px;
+    padding-bottom: 22px;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--du-text-2);
+  }
+  .more {
+    margin-top: 40px;
+  }
+  @media (max-width: 640px) {
+    summary {
+      grid-template-columns: 32px 1fr 18px;
+      gap: 10px;
+    }
+    .text {
+      margin-left: 42px;
+    }
+  }
+</style>

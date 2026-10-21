@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/home/Hero.astro';
+import Duet from '../components/home/Duet.astro';
+import Journey from '../components/home/Journey.astro';
+import Governance from '../components/home/Governance.astro';
+import Workshop from '../components/home/Workshop.astro';
+import Commitments from '../components/home/Commitments.astro';
+import Invitation from '../components/Invitation.astro';
+
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Duonaut',
+  url: 'https://duonaut.com',
+  inLanguage: 'pl-PL',
+};
+---
+
+<Base
+  title="Duonaut — wdrażanie sztucznej inteligencji w organizacjach"
+  description="Budujemy organizacje, które pracują ze sztuczną inteligencją — z dojrzałym zarządzaniem i w rytmie ciągłego rozwoju, tak żeby umiejętnie wykorzystywały rozwój technologiczny."
+  overlayHeader
+  jsonLd={[website]}
+>
+  <Hero />
+  <Duet />
+  <Journey />
+  <Governance />
+  <Workshop />
+  <Commitments />
+  <Invitation />
+</Base>

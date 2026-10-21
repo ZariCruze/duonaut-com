@@ -1,0 +1,102 @@
+---
+// Nagłówek podstrony. 'dawn' — rejestr głośny (gradient rozdziałowy, światło u góry),
+// 'quiet' — rejestr cichy (papier, pasek sun-deep, linia horyzontu).
+import type { Crumb } from '../layouts/Base.astro';
+
+interface Props {
+  title: string;
+  lead?: string;
+  crumbs?: Crumb[];
+  label?: string;
+  tone?: 'dawn' | 'quiet';
+}
+const { title, lead, crumbs = [], label, tone = 'quiet' } = Astro.props;
+---
+
+<section class:list={['page-hero', `page-hero--${tone}`]}>
+  <div class="wrap inner">
+    {
+      crumbs.length > 0 && (
+        <nav class="crumbs" aria-label="Okruszki">
+          <ol>
+            {crumbs.map((c, i) => (
+              <li>
+                {i < crumbs.length - 1 ? (
+                  <a href={c.href}>{c.name}</a>
+                ) : (
+                  <span aria-current="page">{c.name}</span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+    {label && <p class="label hero-label">{label}</p>}
+    <h1 class="h1 title">{title}</h1>
+    {lead && <p class="lead hero-lead">{lead}</p>}
+    <slot />
+  </div>
+  <div class="horizon-wrap wrap" aria-hidden="true"><div class="horizon"></div></div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    background: var(--du-paper);
+  }
+  .page-hero--dawn {
+    background: var(--du-dawn);
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 4px;
+    background: var(--du-sun-deep);
+  }
+  .inner {
+    padding-top: clamp(64px, 9vw, 120px);
+    padding-bottom: clamp(56px, 7vw, 88px);
+  }
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 0;
+    margin: 0 0 32px;
+    padding: 0;
+    list-style: none;
+    font-family: var(--du-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+  }
+  .crumbs li + li::before {
+    content: '/';
+    margin: 0 12px;
+    color: var(--du-rule-22);
+  }
+  .crumbs a {
+    color: var(--du-ink-2);
+  }
+  .crumbs a:hover {
+    color: var(--du-ink);
+  }
+  .hero-label {
+    margin-bottom: 24px;
+    color: var(--du-ink-2);
+  }
+  .title {
+    max-width: 18ch;
+    color: var(--du-ink-deep);
+  }
+  .hero-lead {
+    margin-top: 32px;
+    max-width: 52ch;
+  }
+  .horizon-wrap {
+    padding-bottom: 0;
+  }
+</style>

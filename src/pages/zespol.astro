@@ -1,0 +1,197 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Invitation from '../components/Invitation.astro';
+import { team, staffingPrinciple } from '../data/team';
+
+const crumbs = [{ name: 'Zespół', href: '/zespol' }];
+
+const people = team.map((p) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: p.name,
+  jobTitle: p.role,
+  worksFor: { '@id': new URL('/#organization', Astro.site).href },
+}));
+---
+
+<Base
+  title="Zespół — kto to robi"
+  description="Stały rdzeń i eksperci dobierani do projektu, wyłącznie z praktyką wdrożeniową w organizacjach o realnej skali. Zarządzanie usługami IT i inżynieria AI w jednym zespole."
+  breadcrumbs={crumbs}
+  jsonLd={people}
+>
+  <PageHero
+    crumbs={crumbs}
+    title="Kto to robi"
+    lead="Pracujemy w modelu stałego rdzenia i ekspertów dobieranych do projektu — wyłącznie z praktyką wdrożeniową w organizacjach o realnej skali."
+  />
+
+  <section class="section" aria-labelledby="kwalifikacje">
+    <div class="wrap split">
+      <p class="label">Kwalifikacje</p>
+      <div>
+        <h2 id="kwalifikacje" class="statement">
+          Łączymy dwie grupy kompetencji, które na rynku występują osobno.
+        </h2>
+        <div class="hairline-grid quals">
+          <div class="qual">
+            <p class="qual-label">Zarządcza</p>
+            <p class="qual-text">
+              ITIL Expert i&nbsp;uprawnienia trenerskie w&nbsp;aktualnej wersji standardu zarządzania
+              usługami IT. Lean Six Sigma w&nbsp;obszarze procesowym.
+            </p>
+          </div>
+          <div class="qual">
+            <p class="qual-label">Technologiczna</p>
+            <p class="qual-text">
+              Certyfikacje Microsoft dla platformy chmurowej i&nbsp;narzędzi AI oraz certyfikacje
+              producentów rozwiązań sztucznej inteligencji.
+            </p>
+          </div>
+        </div>
+        <p class="body measure note">
+          Certyfikacje technologiczne odnawiamy w&nbsp;rytmie zmian produktów — w&nbsp;tym obszarze
+          dokument sprzed dwóch lat nie świadczy o&nbsp;niczym.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-mist sun-bar" aria-labelledby="rdzen">
+    <div class="wrap">
+      <p class="label">Stały rdzeń</p>
+      <h2 id="rdzen" class="sr-only">Stały rdzeń</h2>
+      <ul class="people">
+        {
+          team.map((p) => (
+            <li class="person">
+              {p.photo && (
+                <Image
+                  src={p.photo}
+                  alt={p.name}
+                  widths={[320, 640]}
+                  sizes="(max-width: 800px) 90vw, 320px"
+                  class="photo"
+                />
+              )}
+              <p class="role">{p.role}</p>
+              <h3 class="name">{p.name}</h3>
+              <p class="resp">{p.responsibility}</p>
+              <div class="bio">
+                {p.bio.map((b) => (
+                  <p>{b}</p>
+                ))}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="eksperci">
+    <div class="wrap split">
+      <p class="label">Eksperci projektowi</p>
+      <div>
+        <h2 id="eksperci" class="statement">{staffingPrinciple}</h2>
+        <p class="body measure note">
+          Do konkretnych wdrożeń dołączają doświadczeni eksperci — w&nbsp;szczególności
+          w&nbsp;obszarach ryzyka i&nbsp;zgodności w&nbsp;sektorze finansowym oraz architektury danych. Wymagamy wieloletniej praktyki wdrożeniowej i&nbsp;doświadczenia
+          w&nbsp;organizacjach o&nbsp;realnej skali.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Invitation />
+</Base>
+
+<style>
+  .quals {
+    grid-template-columns: 1fr 1fr;
+    margin-top: 48px;
+  }
+  .qual {
+    padding: 28px;
+  }
+  .qual-label {
+    margin-bottom: 12px;
+    font-family: var(--du-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+  }
+  .qual-text {
+    font-size: 18px;
+    line-height: 1.55;
+  }
+  .note {
+    margin-top: 32px;
+  }
+  .people {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    margin: 32px 0 0;
+    padding: 0;
+    list-style: none;
+    background: var(--du-rule-14);
+    border: 1px solid var(--du-rule-14);
+  }
+  .person {
+    padding: 44px 40px 48px;
+    background: var(--du-paper);
+  }
+  .photo {
+    width: 160px;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    margin-bottom: 28px;
+  }
+  .role {
+    font-family: var(--du-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+  }
+  .name {
+    margin: 12px 0 14px;
+    font-size: clamp(30px, 3vw, 40px);
+    font-weight: 200;
+    letter-spacing: -0.02em;
+  }
+  .resp {
+    font-size: 19px;
+    line-height: 1.45;
+    font-weight: 400;
+    max-width: 40ch;
+  }
+  .bio {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--du-rule-14);
+  }
+  .bio p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--du-text-2);
+  }
+  .bio p + p {
+    margin-top: 14px;
+  }
+  @media (max-width: 860px) {
+    .people,
+    .quals {
+      grid-template-columns: 1fr;
+    }
+    .person {
+      padding: 32px 24px;
+    }
+  }
+</style>

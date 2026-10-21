@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+---
+
+<Base title="Nie ma takiej strony" description="Strona, której szukasz, nie istnieje lub została przeniesiona." noindex>
+  <PageHero
+    tone="dawn"
+    label="404"
+    title="Tej strony nie ma na mapie"
+    lead="Adres mógł się zmienić albo zawierać literówkę."
+  >
+    <div class="actions">
+      <a href="/" class="btn">Strona główna</a>
+      <a href="/droga" class="btn btn--ghost">Droga</a>
+    </div>
+  </PageHero>
+</Base>
+
+<style>
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 48px;
+  }
+</style>

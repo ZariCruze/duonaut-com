@@ -1,0 +1,189 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Invitation from '../../components/Invitation.astro';
+import { site } from '../../config/site';
+
+const systems = (await getCollection('warsztat')).sort((a, b) => a.data.order - b.data.order);
+const crumbs = [{ name: 'Warsztat', href: '/warsztat' }];
+---
+
+<Base
+  title="Warsztat — własne systemy i materiały"
+  description="Budujemy własne narzędzia, bo są nam potrzebne, i sprawdzamy na sobie to, co proponujemy klientom. REQLOOP i Automatic Workshop Analyser w działaniu."
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    crumbs={crumbs}
+    title="Budujemy własne narzędzia"
+    lead="Sprawdzamy na sobie to, co proponujemy klientom. Pokazujemy, co nasze systemy robią — nie jak są zbudowane."
+  />
+
+  <section class="section">
+    <div class="wrap split">
+      <p class="label">Dlaczego</p>
+      <div class="intro">
+        <p class="statement">
+          Każdy z&nbsp;naszych systemów powstał najpierw dlatego, że był nam potrzebny.
+        </p>
+        <p class="body measure">
+          Działające narzędzie mówi o&nbsp;kompetencji więcej niż każda prezentacja. Dlatego zanim
+          zaproponujemy organizacji pracę w&nbsp;duecie ze sztuczną inteligencją, stosujemy ją we
+          własnej pracy — z&nbsp;pomiarem, nie deklaratywnie.
+        </p>
+        <p class="body measure">
+          Oba systemy razem pokrywają drogę od odkrycia procesu do gotowych wymagań, czyli początek
+          etapu implementacji. Diagnoza nie jest u&nbsp;nas tylko usługą — ma silnik.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-mist sun-bar" aria-labelledby="systemy">
+    <div class="wrap">
+      <p class="label">Nasze systemy</p>
+      <h2 id="systemy" class="sr-only">Nasze systemy</h2>
+      <ul class="systems">
+        {
+          systems.map((s, i) => (
+            <li class="system">
+              <a href={`/warsztat/${s.id}`} class="system-link">
+                <span class="system-meta">System · {String(i + 1).padStart(2, '0')}</span>
+                <span class="system-title">{s.data.title}</span>
+                <span class="system-tagline">{s.data.tagline}</span>
+                <span class="compare">
+                  <span class="cmp">
+                    <span class="cmp-label">Przed</span>
+                    <span class="cmp-text">{s.data.before}</span>
+                  </span>
+                  <span class="cmp">
+                    <span class="cmp-label">Po</span>
+                    <span class="cmp-text">{s.data.after}</span>
+                  </span>
+                </span>
+                <span class="link-mono system-more">Zobacz kartę systemu →</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--rule" aria-labelledby="materialy">
+    <div class="wrap split">
+      <p class="label">Materiały</p>
+      <div>
+        <h2 id="materialy" class="h2">Opracowania merytoryczne</h2>
+        <p class="body measure materials-text">
+          Drugi strumień Warsztatu. Każdy materiał, który publikujemy, ma tutaj stały adres.
+          Publikujemy rzadziej, ale tylko rzeczy, które sami chcielibyśmy przeczytać.
+        </p>
+        <a href={site.linkedin} class="link-arrow" rel="noopener" target="_blank"
+          >Duonaut na LinkedInie</a
+        >
+      </div>
+    </div>
+  </section>
+
+  <Invitation />
+</Base>
+
+<style>
+  .intro > * + * {
+    margin-top: 24px;
+  }
+  .intro .statement {
+    margin-bottom: 12px;
+  }
+  .systems {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    margin: 32px 0 0;
+    padding: 0;
+    list-style: none;
+    background: var(--du-rule-14);
+    border: 1px solid var(--du-rule-14);
+  }
+  .system-link {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+    padding: 44px 40px;
+    background: var(--du-paper);
+    color: var(--du-ink);
+    transition: background-color 0.3s ease;
+  }
+  .system-link:hover {
+    background: var(--du-blue);
+    color: var(--du-ink);
+  }
+  .system-meta {
+    font-family: var(--du-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+  }
+  .system-title {
+    font-size: clamp(32px, 3.4vw, 46px);
+    font-weight: 200;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+  }
+  .system-tagline {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--du-ink-2);
+  }
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 16px;
+    padding-top: 22px;
+    border-top: 1px solid var(--du-rule-14);
+  }
+  .cmp {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+  }
+  .cmp-label {
+    font-family: var(--du-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--du-ink-2);
+  }
+  .cmp-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--du-text-2);
+  }
+  .system-more {
+    margin-top: auto;
+    padding-top: 16px;
+    color: var(--du-ink-2);
+  }
+  .materials-text {
+    margin: 24px 0 32px;
+  }
+  @media (max-width: 900px) {
+    .systems {
+      grid-template-columns: 1fr;
+    }
+    .system-link {
+      padding: 32px 24px;
+    }
+  }
+  @media (max-width: 520px) {
+    .compare {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

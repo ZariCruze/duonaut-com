@@ -1,0 +1,118 @@
+---
+// Sekcja 10 — Zaproszenie. Rejestr głośny: horyzont, światło poranka. Domknięcie klamry z hero.
+// Używana na końcu strony głównej i wszystkich podstron.
+import { getImage } from 'astro:assets';
+import sun from '../assets/sea/sun-field.jpg';
+import contour from '../assets/sea/sea-contour.jpg';
+
+interface Props {
+  label?: string;
+  title?: string;
+  text?: string;
+}
+const {
+  label = 'Zaproszenie',
+  title = 'Większość organizacji przejdzie przez tę zmianę przypadkiem. Część — świadomie, z kimś, kto już to robił.',
+  text = 'Trzydzieści minut rozmowy, bez prezentacji i bez zobowiązania.',
+} = Astro.props;
+
+const sunImg = await getImage({ src: sun, format: 'webp', width: 300 });
+const contourImg = await getImage({ src: contour, format: 'avif', width: 1680 });
+const contourSmall = await getImage({ src: contour, format: 'avif', width: 840 });
+---
+
+<section
+  class="invitation"
+  aria-labelledby="zaproszenie"
+  style={`--sun: url(${sunImg.src}); --contour: url(${contourImg.src}); --contour-s: url(${contourSmall.src})`}
+>
+  <div class="glow" aria-hidden="true"></div>
+  <div class="wrap inner">
+    <p class="label">{label}</p>
+    <h2 id="zaproszenie" class="title">{title}</h2>
+    <div class="actions">
+      <a href="/kontakt" class="btn">Umów rozmowę</a>
+      <p class="note">{text}</p>
+    </div>
+  </div>
+  <div class="horizon-line" aria-hidden="true"></div>
+  <div class="contour" aria-hidden="true"></div>
+</section>
+
+<style>
+  .invitation {
+    position: relative;
+    overflow: hidden;
+    background: var(--du-dawn);
+    border-top: 1px solid var(--du-rule-10);
+  }
+  .invitation::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 4px;
+    background: var(--du-sun-deep);
+    z-index: 2;
+  }
+  .glow {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 70%;
+    background: var(--sun) center top / cover no-repeat;
+    opacity: 0.85;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, transparent 100%);
+  }
+  .inner {
+    position: relative;
+    z-index: 1;
+    padding-top: clamp(96px, 12vw, 150px);
+    padding-bottom: clamp(56px, 7vw, 80px);
+  }
+  .label {
+    margin-bottom: 28px;
+  }
+  .title {
+    max-width: 22ch;
+    font-size: clamp(34px, 4.6vw, 60px);
+    line-height: 1.1;
+    font-weight: 200;
+    letter-spacing: -0.025em;
+    color: var(--du-ink-deep);
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px 28px;
+    margin-top: 48px;
+  }
+  .note {
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--du-text-2);
+  }
+  .horizon-line {
+    position: relative;
+    height: 1px;
+    margin-inline: var(--gutter);
+    background: linear-gradient(
+      90deg,
+      rgba(8, 59, 69, 0),
+      var(--du-rule-22) 20%,
+      var(--du-rule-22) 80%,
+      rgba(8, 59, 69, 0)
+    );
+  }
+  /* Pas konturowy — wyłącznie przy dolnej krawędzi, tekst nigdy na nim */
+  .contour {
+    height: clamp(64px, 11vw, 160px);
+    margin-top: clamp(48px, 6vw, 72px);
+    background: var(--contour) center top / cover no-repeat;
+  }
+  @media (max-width: 840px) {
+    .contour {
+      background-image: var(--contour-s);
+    }
+  }
+</style>
